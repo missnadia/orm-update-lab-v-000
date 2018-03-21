@@ -62,11 +62,12 @@ class Student
       SELECT *
       FROM  students
       WHERE name = ?
+      LIMIT 1
     SQL
 
-    sql = "SELECT * FROM songs WHERE name = ?"
-  result = DB[:conn].execute(sql, name)[0]
-  Student.new(result[0], result[1], result[2])
+    DB[:conn].execute(sql, name).map do |row|
+      self.new_from_db(row)
+    end.first
   end
 
   def update
